@@ -1,0 +1,72 @@
+
+import sys
+input = lambda :sys.stdin.readline()[:-1]
+sys.setrecursionlimit(10**7)    #再帰関数の呼び出し制限
+
+from math import sqrt, pi, exp, log, log10, sin, cos, tan, ceil, floor, perm, comb, gcd, modf, prod, inf, nan  # lcm, 3つ以上の値のgcd はversion 3.9以降
+
+from fractions import Fraction  
+from decimal import Decimal, ROUND_HALF_UP, ROUND_HALF_EVEN, getcontext
+
+from re import match, search, fullmatch, findall, finditer, sub, split, compile    
+
+from operator import itemgetter, attrgetter, methodcaller    
+import copy    # copy.deepcopy(x)
+
+from functools import reduce, lru_cache               
+from itertools import accumulate, permutations, combinations, combinations_with_replacement, chain, groupby, dropwhile, takewhile, product, zip_longest, count, cycle, repeat
+                            # chain.from_iterable
+from collections import deque, Counter, defaultdict
+from heapq import heapify, heappop, heappush, heappushpop, heapreplace  
+from bisect import bisect_left, bisect, insort_left, insort
+
+import numpy as np
+
+
+###############
+D - Wall (Warshall_floyd)
+###############
+
+def main():
+    H, W = map(int, input().split())
+    
+    c = [list(map(int, input().split())) for _ in range(10)]
+    A = [list(map(int, input().split())) for _ in range(H)]
+
+    graph = c
+
+    def warshall_floyd(graph):
+        for k in range(10):  # 中継点
+            for i in range(10):  # 始点
+                for j in range(10):  # 終点   # i から j へ向かうコスト と  k を経由して j に向かうコスト の小さい方を 登録する
+                    graph[i][j] = min(graph[i][j], graph[i][k] + graph[k][j])
+        return graph
+
+    graph = warshall_floyd(graph)   # graphに対して適応したものを新たなグラフとする
+
+    """
+    for i in range(10):
+       print(graph[i])
+    """
+       
+    num = [0] * 10  # 壁に書かれている各数字の総数
+
+    for i in range(H):
+        for j in range(W):
+            if A[i][j] != -1:
+                num[A[i][j]] += 1
+
+    ans = 0
+
+    for i in range(10):
+        ans += num[i] * graph[i][1]     # 各数字 * 最低コスト の総和
+
+    print(ans)
+
+if __name__ == '__main__':
+    main()
+
+
+
+
+
